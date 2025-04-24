@@ -51,6 +51,11 @@ function Receive() {
 
   // 优化清理函数
   useEffect(() => {
+    // 判断是否为微信浏览器
+    const isWechatBrowser = /MicroMessenger/i.test(navigator.userAgent);
+    if (isWechatBrowser) { 
+      getAppJsapiTicket();
+    }
     const cleanup = () => {
       // 清理 QrScanner
       if (qrScannerRef.current) {
