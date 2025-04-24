@@ -25,3 +25,5 @@ yarn-error.log*
 /wasm-lib/pkg
 /wasm-lib/target
 
+
+qrcode-transfer-*

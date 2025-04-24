@@ -1,90 +1,126 @@
-import React, { useRef, useEffect, useCallback } from 'react';
-import fountain_wasm_init, { init_encode_from_file, next_val } from "@yimiaoxiehou/fountain-wasm";
-import rxing_wasm_init from "@yimiaoxiehou/rxing-wasm";
-import QRCode, { QRCodeByteSegment } from 'qrcode';
-import { Form } from 'react-bootstrap';
-const pako = require('pako');
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import { Container, Form } from "react-bootstrap";
+
+import { createGeneraterSVG } from "@qifi/generate";
+import { appendFileHeaderMetaToBuffer } from "luby-transform";
+const pako = require("pako");
 
 function Send() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const [currentSVG, setCurrentSVG] = useState<string>("");
+  const generatorRef = useRef<Generator | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 初始化WASM模块
+  // 清理资源
   useEffect(() => {
-    const initWASM = async () => {
-      try {
-        await Promise.all([fountain_wasm_init(), rxing_wasm_init()]);
-        console.log("WASM模块初始化成功");
-      } catch (error) {
-        console.error("WASM初始化失败:", error);
-      }
-    };
-
-    initWASM();
-
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      // 清理定时器
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
+
+      // 清理 SVG
+      setCurrentSVG("");
+
+      // 清理生成器
+      generatorRef.current = null;
     };
   }, []);
 
-  const generateQRCode = useCallback((canvas: HTMLCanvasElement, data: Uint8Array) => {
-    const byteSegment: QRCodeByteSegment = {
-      data: data,
-      mode: 'byte'
-    };
-    QRCode.toCanvas(canvas, [byteSegment], { 
-      errorCorrectionLevel: 'L',
-      margin: 1,
-      scale: 8
-    }).catch(console.error);
-  }, []);
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!e.target.files?.[0]) return;
+      const file = e.target.files[0];
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!canvasRef.current || !e.target.files?.[0]) return;
-
-    const canvas = canvasRef.current;
-    const file = e.target.files[0];
-
-    file.arrayBuffer().then(async (buffer) => {
-      const bytes = new Uint8Array(buffer);
-      const compressedData = pako.deflate(bytes);
-      
-      console.log(`原始数据大小: ${bytes.length} bytes`);
-      console.log(`压缩后大小: ${compressedData.length} bytes`);
-
-      const enc = init_encode_from_file(512, file.name, file.type, compressedData);
-      
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      // 清理之前的资源
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
+      setCurrentSVG("");
 
-      intervalRef.current = setInterval(() => {
-        const data = next_val(enc);
-        if (data.length > 0) {
-          generateQRCode(canvas, data);
-        }
-      }, 200);
-    }).catch(console.error);
-  }, [generateQRCode]);
+      file
+        .arrayBuffer()
+        .then(buffer => {
+          const bytes = new Uint8Array(buffer);
+          let data = pako.deflate(bytes);
+          console.log(`原始数据大小: ${bytes.length} bytes`);
+          console.log(`压缩后大小: ${data.length} bytes`);
+          return appendFileHeaderMetaToBuffer(data, {
+            filename: file.name,
+            contentType: file.type,
+          }); // 为压缩数据添加文件头信息，便于后续反编
+        }).then(data => createGeneraterSVG(data, {
+            sliceSize: 1000,
+            ecc: "L",
+            border: 1,
+          }))
+        .then(async (generaterSVG) => {
+          // 保存生成器引用
+          const generator = generaterSVG.fountain();
+          generatorRef.current = generator;
+          async function processGenerator(generator: Generator) {
+            for (const qrcode of generator) {
+              if (!generatorRef.current) {
+                // 如果组件已卸载，停止生成
+                break;
+              }
+              // 使用 Promise 和 ref 管理定时器
+              await new Promise((resolve) => {
+                timeoutRef.current = setTimeout(resolve, 1000 / 10);
+              });
+              // @ts-ignore
+              setCurrentSVG(qrcode);
+            }
+          }
+          await processGenerator(generator);
+          // 处理完成后清理
+          URL.revokeObjectURL(file.name);
+        })
+        .catch((error) => {
+          console.error("File processing error:", error);
+        });
+
+      // 清理 input 的 value，允许选择相同文件
+      e.target.value = "";
+    },
+    []
+  );
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <Form.Group className="mb-3">
-          <Form.Control 
-            type="file" 
-            onChange={handleFileChange}
-            accept="*" 
-          />
-        </Form.Group>
-        <canvas 
-          ref={canvasRef}
-          style={{ maxWidth: '100%', height: 'auto' }}
-        />
-      </header>
-    </div>
+    <Container
+      fluid
+      className="p-0 position-relative"
+      style={{
+        maxWidth: "100%",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Form.Group className="mb-3" style={{
+        width: "300px"
+      }}>
+        <Form.Control type="file" onChange={handleFileChange} accept="*" />
+      </Form.Group>
+      {/* 使用时间戳作为key确保每次都会重新渲染 */}
+      { currentSVG && (
+      <div
+        style={{
+          maxWidth: "97vw",
+          width: "600px",
+          maxHeight: "97vw",
+          height: "600px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        dangerouslySetInnerHTML={{
+          __html: currentSVG,
+        }}
+      />
+      )}
+    </Container>
   );
 }
 
