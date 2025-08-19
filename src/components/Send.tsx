@@ -49,7 +49,7 @@ function Send() {
             contentType: file.type,
           }); // 为压缩数据添加文件头信息，便于后续反编
         }).then(data => createGeneraterSVG(data, {
-            sliceSize: 1000,
+            sliceSize: 990,
             ecc: "L",
             border: 1,
           }))
