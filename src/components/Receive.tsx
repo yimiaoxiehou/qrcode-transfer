@@ -1,6 +1,4 @@
 import React, { useRef, useState, useEffect } from "react";
-import * as ww from "@wecom/jssdk";
-import Axios from "axios";
 import {
   createDecoder,
   readMetaFromBuffer,
@@ -51,11 +49,6 @@ function Receive() {
 
   // 优化清理函数
   useEffect(() => {
-    // 判断是否为微信浏览器
-    const isWechatBrowser = /MicroMessenger/i.test(navigator.userAgent);
-    if (isWechatBrowser) { 
-      getAppJsapiTicket();
-    }
     const cleanup = () => {
       // 清理 QrScanner
       if (qrScannerRef.current) {
@@ -124,24 +117,6 @@ function Receive() {
     }
   };
 
-  const getAppJsapiTicket = async () => {
-    try {
-      const res = await Axios.get("/api/getJsTicket");
-      if (res.data?.errcode !== 0) {
-        throw new Error(res.data?.errmsg || "Failed to get ticket");
-      }
-      ww.register({
-        corpId: "ww0f642810a65d6cb8",
-        agentId: 1000006,
-        jsApiList: ["previewFile"],
-        getConfigSignature: ww.getSignature,
-        onConfigSuccess: () => console.log("Config success"),
-        onConfigComplete: () => console.log("Config complete"),
-      });
-    } catch (error) {
-      console.error("Ticket error:", error);
-    }
-  };
 
   // 二维码处理逻辑
   const handleQrResult = (result: { data: string }) => {
