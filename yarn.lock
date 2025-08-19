@@ -2422,17 +2422,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@qifi/generate@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@qifi/generate@npm:0.1.0"
-  dependencies:
-    js-base64: "npm:^3.7.7"
-    luby-transform: "npm:0.1.0"
-    uqr: "npm:^0.1.2"
-  checksum: 10c0/90aa8d770823de86d801d12f63df9bc3a99677107a840295f2307460e50674ea46a2e7e67c7b0cafde58eaa3a37ef1c64155500bb03e62c6f6f7bd80b35f4bde
-  languageName: node
-  linkType: hard
-
 "@react-aria/ssr@npm:^3.5.0":
   version: 3.9.2
   resolution: "@react-aria/ssr@npm:3.9.2"
@@ -2537,16 +2526,6 @@ __metadata:
   version: 1.1.4
   resolution: "@rushstack/eslint-patch@npm:1.1.4"
   checksum: 10c0/be74a79212e403ed8730dbbe72a04c7b33313397e6057742b4b685da567c335fce17aa36376c9fad4b442b31b16c517acc9a0ff3d42082ed90bee22f520ffe85
-  languageName: node
-  linkType: hard
-
-"@sec-ant/zxing-wasm@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@sec-ant/zxing-wasm@npm:2.2.0"
-  dependencies:
-    "@types/emscripten": "npm:^1.39.9"
-    zustand: "npm:^4.4.3"
-  checksum: 10c0/4d174c787b4027b58811c898870c8e454c64e634c9f6e80c0800d5d271ba2ff5befbdd70c3a24d1139a681dc4325abac4c8c92a3bc6bab66d2f70752a2f6e70a
   languageName: node
   linkType: hard
 
@@ -2889,20 +2868,6 @@ __metadata:
   version: 0.6.0
   resolution: "@types/cookie@npm:0.6.0"
   checksum: 10c0/5b326bd0188120fb32c0be086b141b1481fec9941b76ad537f9110e10d61ee2636beac145463319c71e4be67a17e85b81ca9e13ceb6e3bb63b93d16824d6c149
-  languageName: node
-  linkType: hard
-
-"@types/emscripten@npm:^1.39.9":
-  version: 1.39.10
-  resolution: "@types/emscripten@npm:1.39.10"
-  checksum: 10c0/c9adde9307d54efb5152931bfe99966fbe12fbd4d07663fb5cdc4cc1bd3a1f030882d50d4a27875b7b2d9713d160609e67b72e92177a021c9f4699ee5ac41035
-  languageName: node
-  linkType: hard
-
-"@types/emscripten@npm:^1.40.0":
-  version: 1.40.1
-  resolution: "@types/emscripten@npm:1.40.1"
-  checksum: 10c0/0d6cd29e551f85ba49a0e7d58de16c857960d40e57553e7cc2860b7d80c4210c992ed292998ec3fd3bdc3b41d96541e91d01a6c232106ac0ad79b4710e87f38d
   languageName: node
   linkType: hard
 
@@ -8750,15 +8715,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luby-transform@npm:0.1.0":
-  version: 0.1.0
-  resolution: "luby-transform@npm:0.1.0"
-  dependencies:
-    pako: "npm:^2.1.0"
-  checksum: 10c0/e9f5956d8a70a47a644be24aec28535a0df15542aed376d47009a4e30e2ce945effe711d96b923f4a9c9e34cce3d7caba005c9b08f721d1cc68fd3b7a7c5be49
-  languageName: node
-  linkType: hard
-
 "luby-transform@npm:^0.2.0":
   version: 0.2.0
   resolution: "luby-transform@npm:0.2.0"
@@ -10744,8 +10700,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "qrcode-transfer@workspace:."
   dependencies:
-    "@qifi/generate": "npm:^0.1.0"
-    "@sec-ant/zxing-wasm": "npm:^2.2.0"
     "@testing-library/jest-dom": "npm:^5.16.5"
     "@testing-library/react": "npm:^13.3.0"
     "@testing-library/user-event": "npm:^13.5.0"
@@ -10770,9 +10724,9 @@ __metadata:
     rxjs: "npm:^7.8.2"
     typescript: "npm:^4.7.4"
     update-browserslist-db: "npm:^1.1.3"
+    uqr: "npm:^0.1.2"
     web-vitals: "npm:^2.1.4"
     weui: "npm:1.1.0"
-    zxing-wasm: "npm:^2.1.0"
   languageName: unknown
   linkType: soft
 
@@ -12635,13 +12589,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^4.35.0":
-  version: 4.40.0
-  resolution: "type-fest@npm:4.40.0"
-  checksum: 10c0/b39d4da6f9a154e3db7e714cd05ccf56b53f4f0bbf74dd294cb6be4921b16ecca5cb00cb81b53ab621a31c8e8509c74b5101895ada47af9de368a317d24538a3
-  languageName: node
-  linkType: hard
-
 "type-is@npm:~1.6.18":
   version: 1.6.18
   resolution: "type-is@npm:1.6.18"
@@ -12850,15 +12797,6 @@ __metadata:
   dependencies:
     punycode: "npm:^2.1.0"
   checksum: 10c0/4ef57b45aa820d7ac6496e9208559986c665e49447cb072744c13b66925a362d96dd5a46c4530a6b8e203e5db5fe849369444440cb22ecfc26c679359e5dfa3c
-  languageName: node
-  linkType: hard
-
-"use-sync-external-store@npm:^1.2.2":
-  version: 1.5.0
-  resolution: "use-sync-external-store@npm:1.5.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/1b8663515c0be34fa653feb724fdcce3984037c78dd4a18f68b2c8be55cc1a1084c578d5b75f158d41b5ddffc2bf5600766d1af3c19c8e329bb20af2ec6f52f4
   languageName: node
   linkType: hard
 
@@ -13628,37 +13566,5 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10c0/dceb44c28578b31641e13695d200d34ec4ab3966a5729814d5445b194933c096b7ced71494ce53a0e8820685d1d010df8b2422e5bf2cdea7e469d97ffbea306f
-  languageName: node
-  linkType: hard
-
-"zustand@npm:^4.4.3":
-  version: 4.5.6
-  resolution: "zustand@npm:4.5.6"
-  dependencies:
-    use-sync-external-store: "npm:^1.2.2"
-  peerDependencies:
-    "@types/react": ">=16.8"
-    immer: ">=9.0.6"
-    react: ">=16.8"
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-    immer:
-      optional: true
-    react:
-      optional: true
-  checksum: 10c0/5b39aff2ef57e5a8ada647261ec1115697d397be311c51461d9ea81b5b63c6d2c498b960477ad2db72dc21db6aa229a92bdf644f6a8ecf7b1d71df5b4a5e95d3
-  languageName: node
-  linkType: hard
-
-"zxing-wasm@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "zxing-wasm@npm:2.1.0"
-  dependencies:
-    "@types/emscripten": "npm:^1.40.0"
-    type-fest: "npm:^4.35.0"
-  peerDependencies:
-    "@types/emscripten": ">=1.39.6"
-  checksum: 10c0/1b77f9c13749d54e6942c17a06b83a8d929163b5609a04e8ba93008acac4626172e2bca6243005094ea6b78c1c5363d0a0933ac6a7df5c2ededf66d060310909
   languageName: node
   linkType: hard

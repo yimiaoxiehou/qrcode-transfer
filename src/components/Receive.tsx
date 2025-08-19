@@ -90,7 +90,7 @@ function Receive() {
       try {
         const a = document.createElement("a");
         a.href = url;
-        a.download = meta.filename;
+        a.download = decodeURIComponent(meta.filename);
         a.click();
       } finally {
         // 确保 URL 对象被释放
