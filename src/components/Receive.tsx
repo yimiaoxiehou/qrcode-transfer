@@ -34,6 +34,7 @@ interface ReceiveInfo {
 
 function Receive() {
   const [curDid, setCurDid] = useState(0);
+  // eslint-disable-next-line 
   const [isScanning, setIsScanning] = useState(false);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
@@ -76,6 +77,7 @@ function Receive() {
       }
     };
     return cleanup;
+  // eslint-disable-next-line 
   }, []);
 
   // 优化文件下载函数，确保 URL 对象被正确释放
