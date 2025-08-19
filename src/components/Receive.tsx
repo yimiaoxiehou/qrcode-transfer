@@ -144,7 +144,7 @@ function Receive() {
         checksum: decoder.meta.checksum,
         filesize: decoder.meta.bytes,
         progress: Math.round(
-          ((decoder.decodedCount + 1) * 100) / (decoder.meta.k + 1)
+          ((decoder.decodedCount + 1) * 100) / (decoder.meta.k + 1) ^ 2
         ),
       });
       if (isOkay) {
