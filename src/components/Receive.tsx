@@ -32,6 +32,15 @@ interface ReceiveInfo {
   progress: number;
 }
 
+function formatBytes(bytes: number, decimals = 2) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
 function Receive() {
   const [curDid, setCurDid] = useState(0);
   // eslint-disable-next-line 
@@ -142,13 +151,19 @@ function Receive() {
       console.log(decoder.encodedCount)
       console.log(decoder.decodedCount)
       console.log(JSON.stringify(decoder.meta))
+
+      const decodedRatio = (decoder.decodedCount + 1) / (decoder.meta.k + 1);
+      const estimatedRatio = decoder.encodedCount / (decoder.meta.k * 1.5);
+      let progressRatio = decodedRatio < 0.3 ? estimatedRatio : decodedRatio;
+      
+      // Cap progress at 100%
+      progressRatio = Math.min(progressRatio, 1);
+
       setReceiveInfo({
         received: decoder.encodedCount,
         checksum: decoder.meta.checksum,
         filesize: decoder.meta.bytes,
-        progress: Math.round(
-          (decoder.decodedCount + 1) / (decoder.meta.k + 1) < 0.3 ? decoder.encodedCount / (decoder.meta.k * 1.5) : (decoder.decodedCount + 1) / (decoder.meta.k + 1)
-        ),
+        progress: Math.round(progressRatio * 100),
       });
       if (isOkay) {
         setEndDate((p) => {
@@ -158,7 +173,6 @@ function Receive() {
             return p;
           }
         });
-        console.log("receive file success, checksum: ", decoder.meta.checksum);
         setIsScanning(false);
         const result = decoder.getDecoded();
         if (!result) {
@@ -362,7 +376,7 @@ function Receive() {
                     <Col xs={4} className="text-end fw-medium">
                       文件大小:
                     </Col>
-                    <Col xs={8}>{receiveInfo.filesize} bytes</Col>
+                    <Col xs={8}>{formatBytes(receiveInfo.filesize)}</Col>
                   </Row>
                   <Row className="mb-2">
                     <Col xs={4} className="text-end fw-medium">
