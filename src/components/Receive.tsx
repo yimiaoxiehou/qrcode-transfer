@@ -192,6 +192,7 @@ function Receive() {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const videoDevices = devices.filter((d) => d.kind === "videoinput");
       
+      console.log(videoDevices)
       // 尝试获取后置摄像头
       const backCamera = videoDevices.find(device => 
         device.label.toLowerCase().includes('back') || 
@@ -208,7 +209,8 @@ function Receive() {
         video: {
           deviceId,
           facingMode: backCamera ? "environment" : undefined,
-          width: { ideal: 1280 }, height: { ideal: 720 }
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
         },
         audio: false,
       });
