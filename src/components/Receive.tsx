@@ -139,6 +139,7 @@ function Receive() {
           }
         });
       }
+      console.log(decoder)
       setReceiveInfo({
         received: decoder.encodedCount,
         checksum: decoder.meta.checksum,
