@@ -194,7 +194,7 @@ function Receive() {
       
       console.log(videoDevices)
       // 尝试获取后置摄像头
-      const backCamera = videoDevices.find(device => 
+      const backCamera = videoDevices.findLast(device => 
         device.label.toLowerCase().includes('back') || 
         device.label.toLowerCase().includes('rear') ||
         device.label.toLowerCase().includes('环境') ||
