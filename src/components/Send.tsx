@@ -70,7 +70,7 @@ function Send() {
           setTimeSpeedInfo(
             `数据压缩后大小: ${formatBytes(
               data.length
-            )}, 传输时间最少需要 ${formatSeconds(data.length / 1000 / 10)}`
+            )}, 传输时间最少需要 ${formatSeconds(data.length / 800 / 10)}`
           );
           return appendFileHeaderMetaToBuffer(data, {
             filename: encodeURIComponent(file.name),
