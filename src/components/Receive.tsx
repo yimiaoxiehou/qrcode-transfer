@@ -207,7 +207,8 @@ function Receive() {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           deviceId,
-          facingMode: backCamera ? "environment" : undefined
+          facingMode: backCamera ? "environment" : undefined,
+          width: { ideal: 1280 }, height: { ideal: 720 }
         },
         audio: false,
       });
