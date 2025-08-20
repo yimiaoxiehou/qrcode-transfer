@@ -139,15 +139,12 @@ function Receive() {
           }
         });
       }
-      console.log(decoder.decodedCount)
-      console.log(JSON.stringify(decoder.meta))
-      console.log(decoder.meta.data.length)
       setReceiveInfo({
         received: decoder.encodedCount,
         checksum: decoder.meta.checksum,
         filesize: decoder.meta.bytes,
         progress: Math.round(
-          (decoder.decodedCount + 1) / (decoder.meta.k + 1) < 0.3 ? decoder.encodedCount / decoder.meta.k * 3 : (decoder.decodedCount + 1) / (decoder.meta.k + 1)
+          (decoder.decodedCount + 1) / (decoder.meta.k + 1) < 0.3 ? decoder.encodedCount / decoder.meta.k * 1.5 : (decoder.decodedCount + 1) / (decoder.meta.k + 1)
         ),
       });
       if (isOkay) {
