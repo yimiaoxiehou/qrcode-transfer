@@ -150,7 +150,7 @@ function Receive() {
       }
       const decodedRatio = (decoder.decodedCount + 1) / (decoder.meta.k + 1);
       const estimatedRatio = decoder.encodedCount / (decoder.meta.k * 1.5);
-      let progressRatio = decodedRatio < 0.7 ? estimatedRatio : decodedRatio;
+      let progressRatio = decodedRatio < 0.95 ? estimatedRatio : decodedRatio;
       
       // Cap progress at 100%
       progressRatio = Math.min(progressRatio, 1);
