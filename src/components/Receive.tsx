@@ -139,7 +139,8 @@ function Receive() {
           }
         });
       }
-      console.log(decoder.meta)
+      console.log(decoder.decodedCount)
+      console.log(JSON.stringify(decoder.meta))
       console.log(decoder.meta.data.length)
       setReceiveInfo({
         received: decoder.encodedCount,
