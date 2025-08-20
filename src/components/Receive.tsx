@@ -83,8 +83,8 @@ function Receive() {
   // 优化文件下载函数，确保 URL 对象被正确释放
   const downloadFile = (data: Uint8Array, meta: FileMeta) => {
     try {
-      const unzipData = pako.inflate(data);
-      const blob = new Blob([unzipData], { type: meta.contentType });
+      const unzipData = meta.contentType.endsWith("|zip") ? data :pako.inflate(data);
+      const blob = new Blob([unzipData], { type: meta.contentType.endsWith("|zip") ? meta.contentType.split("|")[0] : meta.contentType });
       const url = URL.createObjectURL(blob);
 
       try {
@@ -208,8 +208,6 @@ function Receive() {
         video: {
           deviceId,
           facingMode: backCamera ? "environment" : undefined,
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
         },
         audio: false,
       });

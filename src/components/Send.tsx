@@ -6,7 +6,26 @@ import { blockToBinary, createEncoder,appendFileHeaderMetaToBuffer } from 'luby-
 import { renderSVG } from 'uqr'
 const pako = require("pako");
 
+function formatBytes(bytes: number, decimals = 2) {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+}
+
+function formatSeconds(seconds: number) {
+  if (seconds < 60) {
+    return `${Math.ceil(seconds)}秒`;
+  }
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.ceil(seconds % 60);
+  return `${minutes}分${remainingSeconds}秒`;
+}
+
 function Send() {
+  const [timeSpeedInfo, setTimeSpeedInfo] = useState<string>("");
   const [currentSVG, setCurrentSVG] = useState<string>("");
   const generatorRef = useRef<Generator | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -19,8 +38,8 @@ function Send() {
         clearTimeout(timeoutRef.current);
       }
 
-      // 清理 SVG
       setCurrentSVG("");
+      setTimeSpeedInfo("");
 
       // 清理生成器
       generatorRef.current = null;
@@ -43,11 +62,19 @@ function Send() {
         .then(buffer => {
           const bytes = new Uint8Array(buffer);
           let data = pako.deflate(bytes);
-          console.log(`原始数据大小: ${bytes.length} bytes`);
-          console.log(`压缩后大小: ${data.length} bytes`);
+          let zip = true;
+          if (data.length > bytes.length) {
+            data = bytes;
+            zip = false;
+          }
+          setTimeSpeedInfo(
+            `数据压缩后大小: ${formatBytes(
+              data.length
+            )}, 传输时间最少需要 ${formatSeconds(data.length / 1000 / 10)}`
+          );
           return appendFileHeaderMetaToBuffer(data, {
             filename: encodeURIComponent(file.name),
-            contentType: file.type,
+            contentType: zip ? file.type + "|zip" : file.type,
           }); // 为压缩数据添加文件头信息，便于后续反编
         }).then(bytes => {
           const encoder = createEncoder(bytes, 1000)
@@ -88,6 +115,7 @@ function Send() {
       }}>
         <Form.Control type="file" onChange={handleFileChange} accept="*" />
       </Form.Group>
+      {timeSpeedInfo && <p>{timeSpeedInfo}</p>}
       {/* 使用时间戳作为key确保每次都会重新渲染 */}
       {currentSVG && (
         <div
