@@ -210,6 +210,11 @@ function Receive() {
   // 优化后的摄像头启动逻辑
   const startCamera = async () => {
     try {
+      // 在启动新摄像头之前，先销毁旧的 QrScanner 实例
+      if (qrScannerRef.current) {
+        qrScannerRef.current.destroy();
+        qrScannerRef.current = null;
+      }
       setIsScanning(true);
       stopStream();
       setHasPermission(true); // 初始化时设置为tru
@@ -270,7 +275,6 @@ function Receive() {
   };
 
   const toggleCamera = () => {
-    qrScannerRef.current?.stop()
     setCurDid((curDid) => (curDid + 1));
     startCamera();
   };
