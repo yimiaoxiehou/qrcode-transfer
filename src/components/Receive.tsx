@@ -292,7 +292,7 @@ function Receive() {
     cameraSwitchTimerRef.current = setTimeout(() => {
       setShowCameraSwitchAlert(false);
       cameraSwitchTimerRef.current = null;
-    }, 2000);
+    }, 1000);
     setCurDid((curDid) => (curDid + 1));
     startCamera();
   };
