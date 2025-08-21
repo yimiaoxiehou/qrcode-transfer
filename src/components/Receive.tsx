@@ -214,6 +214,7 @@ function Receive() {
       stopStream();
       setHasPermission(true); // 初始化时设置为tru
       const devices = await navigator.mediaDevices.enumerateDevices();
+      console.log(JSON.stringify(devices))
       let videoDevices = devices.filter((d) => d.kind === "videoinput");
       if (!isIOS()) {
         videoDevices = videoDevices.reverse();
@@ -222,6 +223,7 @@ function Receive() {
       const backCamera = videoDevices.find(device =>
         device.label.toLowerCase().includes('back') ||
         device.label.toLowerCase().includes('rear') ||
+        device.label.toLowerCase().includes('environment') ||
         device.label.toLowerCase().includes('环境') ||
         device.label.toLowerCase().includes('后置')
       );
