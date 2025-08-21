@@ -225,9 +225,8 @@ function Receive() {
       if (curDid < 0) {
         deviceId = videoDevices.find(device => device.label.toLowerCase().indexOf('front') === -1)?.deviceId || ""
       } else {
-        const id = curDid % videoDevices.length
-        setCurDid(id)
-        deviceId = videoDevices[id]?.deviceId || ""
+        setCurDid((curDid) => (curDid % videoDevices.length));
+        deviceId = videoDevices[curDid]?.deviceId || ""
       }
       console.log(deviceId)
 
