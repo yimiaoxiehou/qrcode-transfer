@@ -219,6 +219,7 @@ function Receive() {
       if (!isIOS()) {
         videoDevices = videoDevices.reverse();
       }
+      console.log(videoDevices)
       let deviceId = ""
       // 优化设备ID选择逻辑
       if (curDid < 0) {
@@ -228,6 +229,7 @@ function Receive() {
         setCurDid(id)
         deviceId = videoDevices[id]?.deviceId || ""
       }
+      console.log(deviceId)
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
