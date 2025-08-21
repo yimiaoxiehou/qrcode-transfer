@@ -17,9 +17,8 @@ import {
   ProgressBar,
 } from "react-bootstrap";
 import { CameraOff, SwitchCamera } from "lucide-react";
-
-const pako = require("pako");
-
+import brotliPromise from 'brotli-wasm';
+// 使用 useEffect 初始化 brotli
 interface FileMeta {
   filename: string;
   contentType: string;
@@ -31,7 +30,13 @@ interface ReceiveInfo {
   filesize: number;
   progress: number;
 }
-
+function isIOS() {
+  const ua = navigator.userAgentData?.platform || navigator.userAgent;
+  return (
+    /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
+};
 function formatBytes(bytes: number, decimals = 2) {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
@@ -56,9 +61,15 @@ function Receive() {
   const decoder = createDecoder();
   const qrScannerRef = useRef<QrScanner | null>(null);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [brotli, setBrotli] = useState<any>(null);
 
   // 优化清理函数
   useEffect(() => {
+    const initBrotli = async () => {
+      const brotliInstance = await brotliPromise;
+      setBrotli(brotliInstance);
+    };
+    initBrotli();
     const cleanup = () => {
       // 清理 QrScanner
       if (qrScannerRef.current) {
@@ -86,13 +97,13 @@ function Receive() {
       }
     };
     return cleanup;
-  // eslint-disable-next-line 
+    // eslint-disable-next-line 
   }, []);
 
   // 优化文件下载函数，确保 URL 对象被正确释放
   const downloadFile = (data: Uint8Array, meta: FileMeta) => {
     try {
-      const unzipData = meta.contentType.endsWith("|zip") ? pako.inflate(data) : data;
+      const unzipData = meta.contentType.endsWith("|zip") ? brotli.decompress(data) : data;
       const blob = new Blob([unzipData], { type: meta.contentType.endsWith("|zip") ? meta.contentType.split("|")[0] : meta.contentType });
       const url = URL.createObjectURL(blob);
 
@@ -151,7 +162,7 @@ function Receive() {
       const decodedRatio = (decoder.decodedCount + 1) / (decoder.meta.k + 1);
       const estimatedRatio = decoder.encodedCount / (decoder.meta.k * 1.5);
       let progressRatio = decodedRatio < 0.95 ? estimatedRatio : decodedRatio;
-      
+
       // Cap progress at 100%
       progressRatio = Math.min(progressRatio, 1);
 
@@ -203,20 +214,22 @@ function Receive() {
       stopStream();
       setHasPermission(true); // 初始化时设置为tru
       const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter((d) => d.kind === "videoinput").reverse();
-      console.log(videoDevices)
+      let videoDevices = devices.filter((d) => d.kind === "videoinput");
+      if (!isIOS()) {
+        videoDevices = videoDevices.reverse();
+      }
       // 尝试获取后置摄像头
-      const backCamera = videoDevices.find(device => 
-        device.label.toLowerCase().includes('back') || 
+      const backCamera = videoDevices.find(device =>
+        device.label.toLowerCase().includes('back') ||
         device.label.toLowerCase().includes('rear') ||
         device.label.toLowerCase().includes('环境') ||
         device.label.toLowerCase().includes('后置')
       );
       // 优化设备ID选择逻辑
-      const deviceId = curDid === 0 && backCamera 
-        ? backCamera.deviceId 
+      const deviceId = curDid === 0 && backCamera
+        ? backCamera.deviceId
         : videoDevices[curDid]?.deviceId;
-      
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           deviceId,
