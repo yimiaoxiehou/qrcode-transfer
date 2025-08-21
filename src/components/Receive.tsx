@@ -250,20 +250,20 @@ function Receive() {
           highlightCodeOutline: true,
           maxScansPerSecond: 10,
           // 设置扫描区域
-          calculateScanRegion: (video: HTMLVideoElement) => {
-            const smallestDimension = Math.min(
-              video.videoWidth,
-              video.videoHeight
-            );
-            const scanRegionSize = Math.round(smallestDimension);
+          // calculateScanRegion: (video: HTMLVideoElement) => {
+          //   const smallestDimension = Math.min(
+          //     video.videoWidth,
+          //     video.videoHeight
+          //   );
+          //   const scanRegionSize = Math.round(smallestDimension);
 
-            return {
-              x: Math.round((video.videoWidth - scanRegionSize) / 2),
-              y: Math.round((video.videoHeight - scanRegionSize) / 2),
-              width: scanRegionSize,
-              height: scanRegionSize,
-            };
-          },
+          //   return {
+          //     x: Math.round((video.videoWidth - scanRegionSize) / 2),
+          //     y: Math.round((video.videoHeight - scanRegionSize) / 2),
+          //     width: scanRegionSize,
+          //     height: scanRegionSize,
+          //   };
+          // },
         });
         qrScannerRef.current.setInversionMode("both");
         qrScannerRef.current.start();
