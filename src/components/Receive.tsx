@@ -248,22 +248,22 @@ function Receive() {
         qrScannerRef.current = new QrScanner(videoRef.current, handleQrResult, {
           highlightScanRegion: true,
           highlightCodeOutline: true,
-          maxScansPerSecond: 10,
+          maxScansPerSecond: 15,
           // 设置扫描区域
-          // calculateScanRegion: (video: HTMLVideoElement) => {
-          //   const smallestDimension = Math.min(
-          //     video.videoWidth,
-          //     video.videoHeight
-          //   );
-          //   const scanRegionSize = Math.round(smallestDimension);
+          calculateScanRegion: (video: HTMLVideoElement) => {
+            const smallestDimension = Math.min(
+              video.videoWidth,
+              video.videoHeight
+            );
+            const scanRegionSize = Math.round(smallestDimension);
 
-          //   return {
-          //     x: Math.round((video.videoWidth - scanRegionSize) / 2),
-          //     y: Math.round((video.videoHeight - scanRegionSize) / 2),
-          //     width: scanRegionSize,
-          //     height: scanRegionSize,
-          //   };
-          // },
+            return {
+              x: Math.round((video.videoWidth - scanRegionSize) / 2) - 10,
+              y: Math.round((video.videoHeight - scanRegionSize) / 2) - 10,
+              width: scanRegionSize + 20,
+              height: scanRegionSize + 20,
+            };
+          },
         });
         qrScannerRef.current.setInversionMode("both");
         qrScannerRef.current.start();
