@@ -47,7 +47,7 @@ function formatBytes(bytes: number, decimals = 2) {
 }
 
 function Receive() {
-  const [curDid, setCurDid] = useState(0);
+  const [curDid, setCurDid] = useState(-1);
   // eslint-disable-next-line 
   const [isScanning, setIsScanning] = useState(false);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -219,10 +219,15 @@ function Receive() {
       if (!isIOS()) {
         videoDevices = videoDevices.reverse();
       }
+      let deviceId = ""
       // 优化设备ID选择逻辑
-      const deviceId = curDid === 0 ? 
-        videoDevices.find(device => device.label.toLowerCase().indexOf('front') === -1 )?.deviceId
-        : videoDevices[curDid]?.deviceId;
+      if (curDid < 0) {
+        deviceId = videoDevices.find(device => device.label.toLowerCase().indexOf('front') === -1)?.deviceId || ""
+      } else {
+        const id = curDid % videoDevices.length
+        setCurDid(id)
+        deviceId = videoDevices[id]?.deviceId || ""
+      }
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
@@ -264,7 +269,8 @@ function Receive() {
   };
 
   const toggleCamera = () => {
-    setCurDid((curDid) => (curDid + 1) % 2);
+    qrScannerRef.current?.stop()
+    setCurDid((curDid) => (curDid + 1));
     startCamera();
   };
 
