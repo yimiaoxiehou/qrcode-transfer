@@ -232,9 +232,9 @@ function Receive() {
       if (curDid >= videoDevices.length) {
         camera = videoDevices.find(device => device.label.toLowerCase().indexOf('front') === -1)
       } else {
-        setCurDid((curDid) => (curDid % videoDevices.length));
         camera = videoDevices[curDid]
       }
+      setCurDid((curDid) => (curDid % videoDevices.length));
       if (camera) {
         setCameraLabel(camera.label)
         deviceId = camera.deviceId
