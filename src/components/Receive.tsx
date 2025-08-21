@@ -165,7 +165,6 @@ function Receive() {
 
       // Cap progress at 100%
       progressRatio = Math.min(progressRatio, 1);
-
       setReceiveInfo({
         received: decoder.encodedCount,
         checksum: decoder.meta.checksum,
@@ -248,7 +247,7 @@ function Receive() {
         qrScannerRef.current = new QrScanner(videoRef.current, handleQrResult, {
           highlightScanRegion: true,
           highlightCodeOutline: true,
-          maxScansPerSecond: 25,
+          maxScansPerSecond: 20,
           // 设置扫描区域
           calculateScanRegion: (video: HTMLVideoElement) => {
             const smallestDimension = Math.min(

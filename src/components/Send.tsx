@@ -71,6 +71,11 @@ function Send() {
         if (fileType) {
           data = bytes;
           zip = false;
+          setTimeSpeedInfo(
+            `文件大小: ${formatBytes(
+              data.length
+            )}, 传输时间最少需要 ${formatSeconds(data.length / 800 / 10)}`
+          );
         } else {
           try {
             const compressed = brotli.compress(bytes, {
@@ -83,17 +88,17 @@ function Send() {
               data = bytes;
               zip = false;
             }
+            setTimeSpeedInfo(
+              `数据压缩后大小: ${formatBytes(
+                data.length
+              )}, 传输时间最少需要 ${formatSeconds(data.length / 800 / 10)}`
+            );
           } catch (e) {
             console.error('Compression failed, use raw file.', e);
             data = bytes;
             zip = false;
           }
         }
-        setTimeSpeedInfo(
-          `数据压缩后大小: ${formatBytes(
-            data.length
-          )}, 传输时间最少需要 ${formatSeconds(data.length / 800 / 10)}`
-        );
         const bytesWithHeader = await appendFileHeaderMetaToBuffer(data, {
           filename: encodeURIComponent(file.name),
           contentType: zip ? file.type + "|zip" : file.type,
@@ -107,7 +112,7 @@ function Send() {
           const svg = renderSVG(str, { border: 2 })
           setCurrentSVG(svg);
         },
-          1000 / 15)
+          1000 / 10)
       } catch (error) {
         console.error("File processing error:", error);
       }
