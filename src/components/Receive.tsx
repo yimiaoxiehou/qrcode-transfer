@@ -257,10 +257,10 @@ function Receive() {
             const scanRegionSize = Math.round(smallestDimension);
 
             return {
-              x: Math.round((video.videoWidth - scanRegionSize) / 2) - 10,
-              y: Math.round((video.videoHeight - scanRegionSize) / 2) - 10,
-              width: scanRegionSize + 20,
-              height: scanRegionSize + 20,
+              x: Math.round((video.videoWidth - scanRegionSize) / 2) - 4,
+              y: Math.round((video.videoHeight - scanRegionSize) / 2) - 4,
+              width: scanRegionSize + 8,
+              height: scanRegionSize + 8,
             };
           },
         });
