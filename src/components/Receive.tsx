@@ -49,6 +49,7 @@ function formatBytes(bytes: number, decimals = 2) {
 function Receive() {
   const [curDid, setCurDid] = useState(-1);
   // eslint-disable-next-line 
+  const [cameraLabel, setCameraLabel] = useState("");
   const [isScanning, setIsScanning] = useState(false);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
@@ -62,6 +63,8 @@ function Receive() {
   const qrScannerRef = useRef<QrScanner | null>(null);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [brotli, setBrotli] = useState<any>(null);
+  const [showCameraSwitchAlert, setShowCameraSwitchAlert] = useState(false);
+  const cameraSwitchTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // 优化清理函数
   useEffect(() => {
@@ -71,6 +74,9 @@ function Receive() {
     };
     initBrotli();
     const cleanup = () => {
+      if (cameraSwitchTimerRef.current) {
+        clearTimeout(cameraSwitchTimerRef.current);
+      }
       // 清理 QrScanner
       if (qrScannerRef.current) {
         qrScannerRef.current.stop();
@@ -225,14 +231,19 @@ function Receive() {
       }
       console.log(videoDevices)
       let deviceId = ""
+      let camera = undefined
       // 优化设备ID选择逻辑
       if (curDid < 0) {
-        deviceId = videoDevices.find(device => device.label.toLowerCase().indexOf('front') === -1)?.deviceId || ""
+        camera = videoDevices.find(device => device.label.toLowerCase().indexOf('front') === -1)
       } else {
         setCurDid((curDid) => (curDid % videoDevices.length));
-        deviceId = videoDevices[curDid]?.deviceId || ""
+        camera = videoDevices[curDid]
       }
-      console.log(deviceId)
+      if (camera) {
+        setCameraLabel(camera.label)
+        deviceId = camera.deviceId
+      }
+      console.log(camera)
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
@@ -274,6 +285,14 @@ function Receive() {
   };
 
   const toggleCamera = () => {
+    if (cameraSwitchTimerRef.current) {
+      clearTimeout(cameraSwitchTimerRef.current);
+    }
+    setShowCameraSwitchAlert(true);
+    cameraSwitchTimerRef.current = setTimeout(() => {
+      setShowCameraSwitchAlert(false);
+      cameraSwitchTimerRef.current = null;
+    }, 2000);
     setCurDid((curDid) => (curDid + 1));
     startCamera();
   };
@@ -296,8 +315,14 @@ function Receive() {
             style={{
               width: "100%",
               backgroundColor: "#000",
+              position: "relative",
             }}
           >
+            {showCameraSwitchAlert && (
+              <Alert variant="success" className="position-absolute top-0 start-50 translate-middle-x m-2" style={{ zIndex: 10, opacity: 0.9 }}>
+                摄像头切换成功 {cameraLabel}
+              </Alert>
+            )}
             {!hasPermission && (
               <div className="d-flex flex-column align-items-center justify-content-center h-100 text-white p-3">
                 <CameraOff size={48} className="mb-3" />
@@ -386,7 +411,7 @@ function Receive() {
                   </Row>
                   <Row className="mb-2">
                     <Col xs={4} className="text-end fw-medium">
-                      文件大小:
+                      数据大小:
                     </Col>
                     <Col xs={8}>{formatBytes(receiveInfo.filesize)}</Col>
                   </Row>
