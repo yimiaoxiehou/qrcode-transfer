@@ -50,7 +50,6 @@ function Receive() {
   const [curDid, setCurDid] = useState(-1);
   // eslint-disable-next-line 
   const [cameraLabel, setCameraLabel] = useState("");
-  const [isScanning, setIsScanning] = useState(false);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [receiveInfo, setReceiveInfo] = useState<ReceiveInfo | undefined>(
@@ -91,7 +90,6 @@ function Receive() {
         animationFrameRef.current = undefined;
       }
       // 重置状态
-      setIsScanning(false);
       setHasPermission(null);
       setReceiveInfo(undefined);
       setStartDate(undefined);
@@ -185,7 +183,6 @@ function Receive() {
             return p;
           }
         });
-        setIsScanning(false);
         const result = decoder.getDecoded();
         if (!result) {
           return;
@@ -220,7 +217,6 @@ function Receive() {
         qrScannerRef.current.destroy();
         qrScannerRef.current = null;
       }
-      setIsScanning(true);
       stopStream();
       setHasPermission(true); // 初始化时设置为tru
       const devices = await navigator.mediaDevices.enumerateDevices();
@@ -280,7 +276,6 @@ function Receive() {
       }
     } catch (error) {
       console.error("Camera error:", error);
-      setIsScanning(false);
     }
   };
 
