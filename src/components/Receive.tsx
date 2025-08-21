@@ -219,23 +219,14 @@ function Receive() {
       if (!isIOS()) {
         videoDevices = videoDevices.reverse();
       }
-      // 尝试获取后置摄像头
-      const backCamera = videoDevices.find(device =>
-        device.label.toLowerCase().includes('back') ||
-        device.label.toLowerCase().includes('rear') ||
-        device.label.toLowerCase().includes('environment') ||
-        device.label.toLowerCase().includes('环境') ||
-        device.label.toLowerCase().includes('后置')
-      );
       // 优化设备ID选择逻辑
-      const deviceId = curDid === 0 && backCamera
-        ? backCamera.deviceId
+      const deviceId = curDid === 0 ? 
+        videoDevices.find(device => device.label.toLowerCase().indexOf('front') === -1 )?.deviceId
         : videoDevices[curDid]?.deviceId;
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           deviceId,
-          facingMode: backCamera ? "environment" : undefined,
         },
         audio: false,
       });
