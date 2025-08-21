@@ -248,7 +248,7 @@ function Receive() {
         qrScannerRef.current = new QrScanner(videoRef.current, handleQrResult, {
           highlightScanRegion: true,
           highlightCodeOutline: true,
-          maxScansPerSecond: 15,
+          maxScansPerSecond: 25,
           // 设置扫描区域
           calculateScanRegion: (video: HTMLVideoElement) => {
             const smallestDimension = Math.min(

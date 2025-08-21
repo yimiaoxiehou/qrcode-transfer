@@ -107,7 +107,7 @@ function Send() {
           const svg = renderSVG(str, { border: 2 })
           setCurrentSVG(svg);
         },
-          1000 / 15)
+          1000 / 25)
       } catch (error) {
         console.error("File processing error:", error);
       }
