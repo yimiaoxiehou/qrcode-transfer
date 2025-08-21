@@ -47,7 +47,7 @@ function formatBytes(bytes: number, decimals = 2) {
 }
 
 function Receive() {
-  const [curDid, setCurDid] = useState(-1);
+  const [curDid, setCurDid] = useState(1000);
   // eslint-disable-next-line 
   const [cameraLabel, setCameraLabel] = useState("");
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -229,7 +229,7 @@ function Receive() {
       let deviceId = ""
       let camera = undefined
       // 优化设备ID选择逻辑
-      if (curDid < 0) {
+      if (curDid >= videoDevices.length) {
         camera = videoDevices.find(device => device.label.toLowerCase().indexOf('front') === -1)
       } else {
         setCurDid((curDid) => (curDid % videoDevices.length));
